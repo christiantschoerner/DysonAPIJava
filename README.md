@@ -15,7 +15,7 @@ Supported Devices:
 3) Hash the password using [this](https://pastebin.com/raw/Sv89m4jj) python script. Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
 4) Get the local IP address of your fan
 5) Start coding. Create an object of your fan and connect to it
-´DysonDevice475 dyson = new DysonDevice475("SERIALNUMBER", "IPADDRESS", "HASHED PASSWORD");
-dyson.connect();´
+```DysonDevice475 dyson = new DysonDevice475("SERIALNUMBER", "IPADDRESS", "HASHED PASSWORD");
+dyson.connect();```
 
 
