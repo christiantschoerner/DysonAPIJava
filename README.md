@@ -51,5 +51,6 @@ new Timer().schedule(new TimerTask() {
 dyson.disconnect();
 ```
 
-
+## Bugs - Contact
+If you found a bug, have questions or want to message me write an email to dev(at)chriis.de. Thank you!
 
