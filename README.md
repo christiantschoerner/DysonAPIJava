@@ -19,5 +19,37 @@ Supported Devices:
 DysonDevice475 dyson = new DysonDevice475("SERIALNUMBER", "IPADDRESS", "HASHED PASSWORD");
 dyson.connect();
 ```
+6) Change some values:
+```java
+dyson.turnOn();
+dyson.setFanLevel(3);
+dyson.setOscillation(true);
+dyson.setNightmode(false);
+```
+7) Request Fan's state.
+**Important** Please wait at least 1 second after connect() before you request a state. Otherwise values may be null because the fan did not send a callback yet. You can do this for example with a Timer like this:
+```java
+new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("Fanspeed: " + dyson.getState().getFanSpeedInt());
+                    System.out.println("Temperature Kevlin: " + dyson.getSensor().getTemperatureKelvin());
+                    System.out.println("Temperature Celsius: " + dyson.getSensor().getTemperatureCelsius());
+                    System.out.println("Temperature Fahrenheit: " + dyson.getSensor().getTemperatureFahrenheit());
+                    
+                    // do something cool
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, 1000);
+```
+8) Disconnect after your stuff is done. This is important because the MqTT Handler only keeps 10 connections alive. When you forgot to disconnect you can not connect any longer. If that is the case please restart the fan by unplugging and replugging it. You can disconnect like this:
+```java
+dyson.disconnect();
+```
+
 
 
