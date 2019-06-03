@@ -48,7 +48,8 @@ dyson.setOscillation(true);
 dyson.setNightmode(false);
 ```
 7) Request Fan's state.
-**Important** Please wait at least 1 second after connect() before you request a state. Otherwise values may be null because the fan did not send a callback yet. Data is automatically requested on connect and after that every 5 seconds. If you want to request data manually use `dyson.requestData();` You can do a request after a second for example with a Timer like this:
+**Important** Please wait at least 1 second after connect() before you request a state. Otherwise values may be null because the fan did not send a callback yet. Data is automatically requested on connect and after that every 5 seconds. If you want to request data manually use `dyson.requestData();` You can do a request after a second for example with a Timer like this:\n
+Synchronous:
 ```java
 new Timer().schedule(new TimerTask() {
             @Override
@@ -67,6 +68,24 @@ new Timer().schedule(new TimerTask() {
             }
         }, 1000);
 ```
+Asynchronous:
+```java
+        Executors.newScheduledThreadPool(5).schedule(new Runnable() {
+            public void run() {
+                try {
+                    dyson.disconnect();
+
+                    System.out.println("Fanspeed: " + dyson.getState().getFanSpeedInt());
+                    System.out.println("Temperature Kevlin: " + dyson.getSensor().getTemperatureKelvin());
+                    System.out.println("Temperature Celsius: " + dyson.getSensor().getTemperatureCelsius());
+                    System.out.println("Temperature Fahrenheit: " + dyson.getSensor().getTemperatureFahrenheit());
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 1, TimeUnit.SECONDS);
+```
+
 8) Disconnect after your stuff is done. This is important because the MqTT Handler only keeps 10 connections alive. When you forgot to disconnect you can not connect any longer. If that is the case please restart the fan by unplugging and replugging it. You can disconnect like this:
 ```java
 dyson.disconnect();
