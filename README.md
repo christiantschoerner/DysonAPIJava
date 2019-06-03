@@ -30,7 +30,8 @@ Dependency:
 ## How to use
 1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX.
 You can find it at the sticker of your fan or in the app:
-![alt text](https://i.ibb.co/ZGVMwfJ/github.jpg)
+![alt text][logo]
+[logo]: https://i.ibb.co/ZGVMwfJ/github.jpg "Logo Title Text 2"
 
 2) Get the WIFI code from the sticker or the manual of your fan
 3) Hash the password using [this](https://pastebin.com/raw/Sv89m4jj) python script. Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
