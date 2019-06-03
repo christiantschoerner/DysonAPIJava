@@ -6,11 +6,31 @@ Supported Devices:
 
 ## Import to project
 1) Download Jarfile with all dependencies included [here](https://drive.google.com/uc?export=download&id=1qwacjVMhxpuMV_Xe_lWYlEAdlghxft8c)
-2) Maven -> Coming soon!
+2) Maven:
+Repository:
+```xml
+    <repositories>
+        <repository>
+            <id>myMavenRepoRead</id>
+            <url>https://mymavenrepo.com/repo/QPWAmwOfBYJMVg7noRm7/</url>
+        </repository>
+    </repositories>
+```
+Dependency:
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.tschoerner.christian</groupId>
+            <artifactId>dysonapi</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+```
 
 ## How to use
 1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX. You can find it at the sticker of your fan or in the app:
 ![alt text](https://i.ibb.co/ZGVMwfJ/github.jpg)
+
 2) Get the WIFI code from the sticker or the manual of your fan
 3) Hash the password using [this](https://pastebin.com/raw/Sv89m4jj) python script. Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
 4) Get the local IP address of your fan
