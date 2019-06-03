@@ -48,7 +48,7 @@ dyson.setOscillation(true);
 dyson.setNightmode(false);
 ```
 7) Request Fan's state.
-**Important** Please wait at least 1 second after connect() before you request a state. Otherwise values may be null because the fan did not send a callback yet. Data is automatically requested on connect and after that every 5 seconds. If you want to request data manually use `dyson.requestData();` You can do a request after a second for example with a Timer like this:\n
+**Important** Please wait at least 1 second after connect() before you request a state. Otherwise values may be null because the fan did not send a callback yet. Data is automatically requested on connect and after that every 5 seconds. If you want to request data manually use `dyson.requestData();` You can do a request after a second for example with a Timer like this:<br />
 Synchronous:
 ```java
 new Timer().schedule(new TimerTask() {
