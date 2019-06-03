@@ -28,7 +28,8 @@ Dependency:
 ```
 
 ## How to use
-1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX. You can find it at the sticker of your fan or in the app:
+1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX.
+You can find it at the sticker of your fan or in the app:
 ![alt text](https://i.ibb.co/ZGVMwfJ/github.jpg)
 
 2) Get the WIFI code from the sticker or the manual of your fan
