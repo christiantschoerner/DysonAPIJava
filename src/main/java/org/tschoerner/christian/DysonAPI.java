@@ -3,23 +3,23 @@ package org.tschoerner.christian;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.tschoerner.christian.methods.DysonDevice475;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DysonAPI {
 
     public static void main(String[] args) throws MqttException {
-        final DysonDevice475 dyson = new DysonDevice475("NN2-EU-JEA3438A",
-                "192.168.86.46",
-                "1SFkfgdXRNv5NYmHgUDVnB/mV6nMmu5/3wQourisD8ti6AK2J/GS/erdvYowCJMztkx7WUAGbhVXh9tc12T77Q==");
+        final DysonDevice475 dyson = new DysonDevice475("XXX-XX-XXXXXXXX",
+                "1.1.1.1",
+                "ABCDEFGHIJKLMNOPQRTUVWXYZ");
         dyson.connect();
         dyson.turnOn();
         dyson.setFanLevel(3);
+        dyson.setOscillation(true);
+        dyson.setNightmode(false);
 
 
-
-        new Timer().schedule(new TimerTask() {
-            @Override
+        Executors.newScheduledThreadPool(5).schedule(new Runnable() {
             public void run() {
                 try {
                     dyson.disconnect();
@@ -31,8 +31,7 @@ public class DysonAPI {
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
-
             }
-        }, 1000*2);
+        }, 1, TimeUnit.SECONDS);
     }
 }
