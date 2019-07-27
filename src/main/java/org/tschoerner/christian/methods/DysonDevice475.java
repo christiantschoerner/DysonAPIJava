@@ -2,9 +2,10 @@ package org.tschoerner.christian.methods;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONObject;
+import org.tschoerner.christian.interfaces.DysonSensorCallback;
+import org.tschoerner.christian.interfaces.DysonStateCallback;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
 
 public class DysonDevice475 implements MqttCallback {
 
@@ -18,6 +19,8 @@ public class DysonDevice475 implements MqttCallback {
 
     private DysonState dysonState;
     private DysonSensor dysonSensor;
+    private DysonStateCallback stateCallback;
+    private DysonSensorCallback sensorCallback;
 
     public DysonDevice475(String serialNumber, String ip, String password){
         this.serialNumber = serialNumber;
@@ -26,25 +29,15 @@ public class DysonDevice475 implements MqttCallback {
 
         this.COMMAND_TOPIC = "475/" + this.serialNumber + "/command";
         this.STATUS_TOPIC = "475/" + this.serialNumber + "/status/current";
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if(!client.isConnected()){
-                    this.cancel();
-                    return;
-                }
-                try {
-                    requestData();
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 1000*5, 1000*5);
     }
 
 
     public void connect(int port) throws MqttException {
+        if(client != null){
+            if(client.isConnected()){
+                return;
+            }
+        }
         client = new MqttClient("tcp://" + ip + ":" + port, MqttClient.generateClientId());
 
         MqttConnectOptions options = new MqttConnectOptions();
@@ -54,27 +47,35 @@ public class DysonDevice475 implements MqttCallback {
         client.connect(options);
         client.setCallback(this);
         client.subscribe(STATUS_TOPIC);
-
-        requestData();
     }
 
     public void connect() throws MqttException {
         connect(1883);
     }
 
-    public void disconnect(boolean force) throws MqttException {
-        if(!client.isConnected()){
-            return;
-        }
+    public void disconnect(final boolean force) {
+        new Runnable() {
+            public void run() {
+                if(!client.isConnected()){
+                    return;
+                }
 
-        if(force){
-            client.disconnectForcibly();
-        }else{
-            client.disconnect();
-        }
+                try {
+                    if(force){
+                        client.disconnectForcibly();
+                    }else{
+                        client.disconnect();
+                    }
+                }catch (MqttException e){
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
     }
 
-    public void disconnect() throws MqttException {
+    public void disconnect() {
         disconnect(false);
     }
 
@@ -110,13 +111,20 @@ public class DysonDevice475 implements MqttCallback {
         sendMqttMessage(COMMAND_TOPIC, message);
     }
 
-    public void requestData() throws MqttException {
+    public void requestState(DysonStateCallback callback) throws MqttException {
+        this.stateCallback = callback;
+
         String message = "{ \"mode-reason\": \"LAPP\", \"time\": \"2018-07-01T14:41:06Z\", \"msg\": \"REQUEST-CURRENT-STATE\" }";
         sendMqttMessage(STATUS_TOPIC, message);
+    }
 
-        message = "{ \"mode-reason\": \"LAPP\", \"time\": \"2018-07-01T14:41:06Z\", \"msg\": \"REQUEST-PRODUCT-ENVIRONMENT-CURRENT-SENSOR-DATA\" }";
+    public void requestSensorData(DysonSensorCallback callback) throws MqttException {
+        this.sensorCallback = callback;
+
+        String message = "{ \"mode-reason\": \"LAPP\", \"time\": \"2018-07-01T14:41:06Z\", \"msg\": \"REQUEST-PRODUCT-ENVIRONMENT-CURRENT-SENSOR-DATA\" }";
         sendMqttMessage(COMMAND_TOPIC, message);
     }
+
 
     public void sendMqttMessage(String topic, String message) throws MqttException {
         byte[] bytes = message.getBytes();
@@ -198,6 +206,9 @@ public class DysonDevice475 implements MqttCallback {
 
             DysonState dysonState = new DysonState(msg, time, modeReason, stateReason, mode, status, fanSpeed, airQuality, oscillation, filterLifeRemaining, nightMode);
             this.dysonState = dysonState;
+            if(this.stateCallback != null){
+                this.stateCallback.onStateReceived(this.dysonState);
+            }
         }else if(message.contains("ENVIRONMENTAL-CURRENT-SENSOR-DATA")){
             JSONObject jsonObject = new JSONObject(message);
             JSONObject data = jsonObject.getJSONObject("data");
@@ -213,6 +224,9 @@ public class DysonDevice475 implements MqttCallback {
 
             DysonSensor dysonSensor = new DysonSensor(msg, time, temperature, humidity, dust, volatilOrganicCompounds, sleepTimer);
             this.dysonSensor = dysonSensor;
+            if(this.sensorCallback != null){
+                this.sensorCallback.onSensorDataReceived(this.dysonSensor);
+            }
         }
     }
 
