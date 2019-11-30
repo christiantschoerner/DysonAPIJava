@@ -1,6 +1,6 @@
 package org.tschoerner.christian.methods;
 
-public class DysonState {
+public class DysonState455 {
 
     private String message;
     private String time;
@@ -12,11 +12,17 @@ public class DysonState {
     private int fanSpeedInt;
     private String airQuality;
     private boolean oscillation;
+    private boolean continuousMesurement;
     private String filterLifeRemaining;
     private boolean nightMode;
+    private String heaterMode;
+    private String targetTemperature;
+    private boolean heating;
+    private boolean heaterFocus;
 
-    public DysonState(String message, String time, String modeReason, String stateReason, String mode, String status,
-                      String fanSpeed, String airQuality, boolean oscillation, String filterLifeRemaining, boolean nightMode){
+    public DysonState455(String message, String time, String modeReason, String stateReason, String mode, String status,
+                         String fanSpeed, String airQuality, boolean oscillation, boolean continuousMesurement, String filterLifeRemaining,
+                         boolean nightMode, String heaterMode, String targetTemperature, boolean heating, boolean heaterFocus){
 
         this.message = message;
         this.time = time;
@@ -27,8 +33,13 @@ public class DysonState {
         this.fanSpeed = fanSpeed;
         this.airQuality = airQuality;
         this.oscillation = oscillation;
+        this.continuousMesurement = continuousMesurement;
         this.filterLifeRemaining = filterLifeRemaining;
         this.nightMode = nightMode;
+        this.heaterMode = heaterMode;
+        this.targetTemperature = targetTemperature;
+        this.heating = heating;
+        this.heaterFocus = heaterFocus;
     }
 
     public boolean isNightMode() {
@@ -41,7 +52,7 @@ public class DysonState {
 
     public int getFanSpeedInt() {
         if(fanSpeed.charAt(2) == '0'){ // != 10
-            fanSpeedInt = Integer.valueOf(fanSpeed.replaceAll("0", ""));
+            fanSpeedInt = Integer.parseInt(fanSpeed.replaceAll("0", ""));
         }else{
             fanSpeedInt = 10;
         }
@@ -86,5 +97,25 @@ public class DysonState {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getHeaterMode() {
+        return heaterMode;
+    }
+
+    public String getTargetTemperature() {
+        return targetTemperature;
+    }
+
+    public boolean isHeating() {
+        return heating;
+    }
+
+    public boolean isContinuousMesurement() {
+        return continuousMesurement;
+    }
+
+    public boolean isHeaterFocus() {
+        return heaterFocus;
     }
 }

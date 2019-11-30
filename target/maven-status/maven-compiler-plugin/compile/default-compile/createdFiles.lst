@@ -1,7 +1,0 @@
-org\tschoerner\christian\DysonAPI.class
-org\tschoerner\christian\methods\DysonDevice475.class
-org\tschoerner\christian\interfaces\DysonStateCallback.class
-org\tschoerner\christian\methods\DysonSensor.class
-org\tschoerner\christian\interfaces\DysonSensorCallback.class
-org\tschoerner\christian\methods\DysonDevice475$1.class
-org\tschoerner\christian\methods\DysonState.class
