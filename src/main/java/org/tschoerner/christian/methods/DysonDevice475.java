@@ -113,7 +113,7 @@ public class DysonDevice475 implements MqttCallback {
         this.stateCallback = callback;
 
         String message = "{ \"mode-reason\": \"LAPP\", \"time\": \"2018-07-01T14:41:06Z\", \"msg\": \"REQUEST-CURRENT-STATE\" }";
-        sendMqttMessage(STATUS_TOPIC, message);
+        sendMqttMessage(COMMAND_TOPIC, message);
     }
 
     public void requestSensorData(DysonSensorCallback callback) throws MqttException {
