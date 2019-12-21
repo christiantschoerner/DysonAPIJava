@@ -177,51 +177,64 @@ public class DysonDevice475 implements MqttCallback {
 
      */
 
-    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-        String message = new String(mqttMessage.getPayload());
+    public void messageArrived(String s, MqttMessage mqttMessage)  {
+        try {
+            String message = new String(mqttMessage.getPayload());
 
-        if(message.contains("STATE-CHANGE")){
-            JSONObject jsonObject = new JSONObject(message);
-            JSONObject state = jsonObject.getJSONObject("product-state");
+            if(message.contains("CURRENT-STATE")){
+                JSONObject jsonObject = new JSONObject(message);
+                JSONObject state = jsonObject.getJSONObject("product-state");
 
-            String msg = jsonObject.getString("msg");
-            String time = jsonObject.getString("time");
-            String modeReason = jsonObject.getString("mode-reason");
-            String stateReason = jsonObject.getString("state-reason");
-
-            String mode = String.valueOf(state.getJSONArray("fmod").get(1));
-            String status = String.valueOf(state.getJSONArray("fnst").get(1));
-            String fanSpeed = String.valueOf(state.getJSONArray("fnsp").get(1));
-            String airQuality = String.valueOf(state.getJSONArray("qtar").get(1));
-            Boolean oscillation = Boolean.valueOf(String.valueOf(state.getJSONArray("oson").get(1)));
-            String filterLifeRemaining = String.valueOf(state.getJSONArray("filf").get(1));
-            Boolean nightMode = Boolean.valueOf(String.valueOf(state.getJSONArray("nmod").get(1)));
+                String msg = jsonObject.getString("msg");
+                String time = jsonObject.getString("time");
+                String modeReason = jsonObject.getString("mode-reason");
+                String stateReason = jsonObject.getString("state-reason");
 
 
-            DysonState475 dysonState = new DysonState475(msg, time, modeReason, stateReason, mode, status, fanSpeed, airQuality, oscillation, filterLifeRemaining, nightMode);
-            this.dysonState = dysonState;
-            if(this.stateCallback != null){
-                this.stateCallback.onStateReceived(this.dysonState);
+                /*String mode = String.valueOf(state.getJSONArray("fmod").get(1));
+                String status = String.valueOf(state.getJSONArray("fnst").get(1));
+                String fanSpeed = String.valueOf(state.getJSONArray("fnsp").get(1));
+                String airQuality = String.valueOf(state.getJSONArray("qtar").get(1));
+                Boolean oscillation = Boolean.valueOf(String.valueOf(state.getJSONArray("oson").get(1)));
+                String filterLifeRemaining = String.valueOf(state.getJSONArray("filf").get(1));
+                Boolean nightMode = Boolean.valueOf(String.valueOf(state.getJSONArray("nmod").get(1)));*/
+
+                String mode = state.getString("fmod");
+                String status = state.getString("fnst");
+                String fanSpeed = state.getString("fnsp");
+                String airQuality = state.getString("qtar");
+                String oscillation = state.getString("oson");
+                String filterLifeRemaining = state.getString("filf");
+                String nightMode = state.getString("nmod");
+
+                DysonState475 dysonState = new DysonState475(msg, time, modeReason, stateReason, mode, status, fanSpeed, airQuality, oscillation.equalsIgnoreCase("ON"), filterLifeRemaining, nightMode.equalsIgnoreCase("ON"));
+                this.dysonState = dysonState;
+                if(this.stateCallback != null){
+                    this.stateCallback.onStateReceived(this.dysonState);
+                }
+            }else if(message.contains("ENVIRONMENTAL-CURRENT-SENSOR-DATA")){
+                JSONObject jsonObject = new JSONObject(message);
+                JSONObject data = jsonObject.getJSONObject("data");
+
+                String msg = jsonObject.getString("msg");
+                String time = jsonObject.getString("time");
+
+                Double temperature = Double.valueOf(Double.valueOf(data.getString("tact")) / 10);
+                String humidity = data.getString("hact");
+                String dust = data.getString("pact");
+                String volatilOrganicCompounds = data.getString("vact");
+                String sleepTimer = data.getString("sltm");
+
+                DysonSensor dysonSensor = new DysonSensor(msg, time, temperature, humidity, dust, volatilOrganicCompounds, sleepTimer);
+                this.dysonSensor = dysonSensor;
+                if(this.sensorCallback != null){
+                    this.sensorCallback.onSensorDataReceived(this.dysonSensor);
+                }
             }
-        }else if(message.contains("ENVIRONMENTAL-CURRENT-SENSOR-DATA")){
-            JSONObject jsonObject = new JSONObject(message);
-            JSONObject data = jsonObject.getJSONObject("data");
+        }catch (Exception e){
 
-            String msg = jsonObject.getString("msg");
-            String time = jsonObject.getString("time");
-
-            Double temperature = Double.valueOf(Double.valueOf(data.getString("tact")) / 10);
-            String humidity = data.getString("hact");
-            String dust = data.getString("pact");
-            String volatilOrganicCompounds = data.getString("vact");
-            String sleepTimer = data.getString("sltm");
-
-            DysonSensor dysonSensor = new DysonSensor(msg, time, temperature, humidity, dust, volatilOrganicCompounds, sleepTimer);
-            this.dysonSensor = dysonSensor;
-            if(this.sensorCallback != null){
-                this.sensorCallback.onSensorDataReceived(this.dysonSensor);
-            }
         }
+
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
