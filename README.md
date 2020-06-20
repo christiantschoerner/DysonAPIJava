@@ -2,10 +2,11 @@
 Simple Library to control Dyson Fans with Java
 Supported Devices:
 - Dyson Pure Cool™ (475)
-- More coming
+- Dyson Pure Hot+Coolᵀᴹ Link (455)
+- Any Device with similar functions. Fork the Library and add the device in DysonDeviceType.java
 
 ## Import to project
-1) Download Jarfile with all dependencies included [here](https://drive.google.com/uc?export=download&id=1qwacjVMhxpuMV_Xe_lWYlEAdlghxft8c)
+1) Download Jarfile with all dependencies in the "Releases" tab
 2) Maven:
 Repository:
 ```xml
@@ -28,69 +29,51 @@ Dependency:
 ```
 
 ## How to use
+*Important* Please notice that at least **Java 8** is required to use this Library<br><br>
+
 1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX.
 You can find it at the sticker of your fan or in the app:<br />
-![alt text](https://i.ibb.co/ZGVMwfJ/github.jpg "App")
+![alt text](https://cdn.tschoerner.cloud/hcRXygKoa5tzCuu3ylVY0wAt2vlNN9ni4CX82YLTnMqfyezQ "App")
 
-2) Get the WIFI code from the sticker or the manual of your fan
+2) Get the WIFI code from the sticker or the manual of your fan. It could look like this:<br>
+![alt text](https://cdn.tschoerner.cloud/a5VHT2QBPia6eUf1uIQwPnBO2n1KCuMnjWyT9MBf7Etz1G3071 "Code")
 3) Hash the password using [this](https://pastebin.com/raw/Sv89m4jj) python script. Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
-4) Get the local IP address of your fan
-5) Start coding. Create an object of your fan and connect to it
+4) Get the local IP-Address of your fan
+5) Happy coding. This little example shows everything you need to know about the Library and how to use it: <br>
 ```java
-DysonDevice475 dyson = new DysonDevice475("SERIALNUMBER", "IPADDRESS", "HASHED PASSWORD");
-dyson.connect();
-```
-6) Change some values:
-```java
-dyson.turnOn();
-dyson.setFanLevel(3);
-dyson.setOscillation(true);
-dyson.setNightmode(false);
-```
-7) Request Fan's state.
-**Important** Please wait at least 1 second after connect() before you request a state. Otherwise values may be null because the fan did not send a callback yet. Data is automatically requested on connect and after that every 5 seconds. If you want to request data manually use `dyson.requestData();` You can do a request after a second for example with a Timer like this:<br />
-Synchronous:
-```java
-new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    System.out.println("Fanspeed: " + dyson.getState().getFanSpeedInt());
-                    System.out.println("Temperature Kevlin: " + dyson.getSensor().getTemperatureKelvin());
-                    System.out.println("Temperature Celsius: " + dyson.getSensor().getTemperatureCelsius());
-                    System.out.println("Temperature Fahrenheit: " + dyson.getSensor().getTemperatureFahrenheit());
-                    
-                    // do something cool
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
+    private static final String DYSON_IP = "192.168.86.XXX";
+    private static final String DYSON_SERIALNUMBER = "NN2-EU-XXXXXXXX";
+    private static final String DYSON_PASSWORD = "1SFkfgdXRXXXXXXXXXXXXXXXXXXXXXXX";
 
-            }
-        }, 1000);
-```
-Asynchronous:
-```java
-        Executors.newScheduledThreadPool(5).schedule(new Runnable() {
-            public void run() {
-                try {
-                    dyson.disconnect();
+    public static void main(String[] args) throws MqttException {
+        DysonDevice dysonDevice = new DysonDevice(DysonDeviceType.PURECOOLLINK, DYSON_IP,
+                DYSON_PASSWORD,
+                DYSON_SERIALNUMBER);
 
-                    System.out.println("Fanspeed: " + dyson.getState().getFanSpeedInt());
-                    System.out.println("Temperature Kevlin: " + dyson.getSensor().getTemperatureKelvin());
-                    System.out.println("Temperature Celsius: " + dyson.getSensor().getTemperatureCelsius());
-                    System.out.println("Temperature Fahrenheit: " + dyson.getSensor().getTemperatureFahrenheit());
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 1, TimeUnit.SECONDS);
-```
+        dysonDevice.setField(DysonStateEnum.MODE, ModeField.ON);
+        dysonDevice.setField(DysonStateEnum.STATUS, StatusField.ON); // not needed
+        dysonDevice.setField(DysonStateEnum.FANSPEED, FanSpeedField.SPEED2);
+        dysonDevice.setField(DysonStateEnum.NIGHTMODE, NightModeField.OFF);
+        dysonDevice.setField(DysonStateEnum.OSCILLATION, OscillationField.ON);
 
-8) Disconnect after your stuff is done. This is important because the MqTT Handler only keeps 10 connections alive. When you forgot to disconnect you can not connect any longer. If that is the case please restart the fan by unplugging and replugging it. You can disconnect like this:
-```java
-dyson.disconnect();
+        dysonDevice.getState(dysonState -> {
+            int fanSpeed = dysonState.getInt(DysonStateEnum.FANSPEED);
+            boolean nightMode = dysonState.getBoolean(DysonStateEnum.NIGHTMODE);
+
+            System.out.println("FanSpeed: " + fanSpeed);
+            System.out.println("NightMode: " + nightMode);
+        });
+
+        dysonDevice.getSensorData(dysonSensorData -> {
+            Object temperature = dysonSensorData.get(DysonSensorEnum.TEMPERATURE);
+
+            System.out.println("Temperature: " + temperature.toString());
+        });
+
+    }
+
 ```
 
 ## Bugs - Contact
-If you found a bug, have questions or want to message me write an email to dev(at)chriis.de. Thank you!
+If you found a bug, have questions or want to message me please open an issue. Thank you!
 
