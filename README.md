@@ -37,7 +37,7 @@ You can find it at the sticker of your fan or in the app:<br />
 
 2) Get the WIFI code from the sticker or the manual of your fan. It could look like this:<br>
 ![alt text](https://cdn.tschoerner.cloud/a5VHT2QBPia6eUf1uIQwPnBO2n1KCuMnjWyT9MBf7Etz1G3071 "Code")
-3) Hash the password using [this](https://pastebin.com/raw/Sv89m4jj) python script. Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
+3) Hash the password using [this](https://paste.tschoerner.cloud/r/PEs9p7dtyo) python script (Python 2 & 3). Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
 4) Get the local IP-Address of your fan
 5) Happy coding. This little example shows everything you need to know about the Library and how to use it: <br>
 ```java
