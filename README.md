@@ -23,13 +23,13 @@ Dependency:
         <dependency>
             <groupId>org.tschoerner.christian</groupId>
             <artifactId>dysonapi</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 ```
 
 ## How to use
-*Important* Please notice that at least **Java 8** is required to use this Library<br><br>
+***Important!*** Please notice that at least **Java 8** is required to use this Library<br><br>
 
 1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX.
 You can find it at the sticker of your fan or in the app:<br />
