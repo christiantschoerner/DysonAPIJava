@@ -29,6 +29,8 @@ Dependency:
 ```
 
 ## How to use
+*Important* Please notice that at least **Java 8** is required to use this Library<br><br>
+
 1) Get the serial number of your device. It is in the format XXX-XX-XXXXXXXX.
 You can find it at the sticker of your fan or in the app:<br />
 ![alt text](https://cdn.tschoerner.cloud/hcRXygKoa5tzCuu3ylVY0wAt2vlNN9ni4CX82YLTnMqfyezQ "App")
@@ -37,11 +39,11 @@ You can find it at the sticker of your fan or in the app:<br />
 ![alt text](https://cdn.tschoerner.cloud/a5VHT2QBPia6eUf1uIQwPnBO2n1KCuMnjWyT9MBf7Etz1G3071 "Code")
 3) Hash the password using [this](https://pastebin.com/raw/Sv89m4jj) python script. Thanks to [mecks52](https://github.com/mecks52/openhab2-dyson475/blob/master/getPwdHash.py)
 4) Get the local IP-Address of your fan
-5) Happy coding. This little example shows everything you need to know about the Library and how to use it<br>
+5) Happy coding. This little example shows everything you need to know about the Library and how to use it: <br>
 ```java
-private static final String DYSON_IP = "192.168.86.XXX";
+    private static final String DYSON_IP = "192.168.86.XXX";
     private static final String DYSON_SERIALNUMBER = "NN2-EU-XXXXXXXX";
-    private static final String DYSON_PASSWORD = "1SFkfgdXRXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+    private static final String DYSON_PASSWORD = "1SFkfgdXRXXXXXXXXXXXXXXXXXXXXXXX";
 
     public static void main(String[] args) throws MqttException {
         DysonDevice dysonDevice = new DysonDevice(DysonDeviceType.PURECOOLLINK, DYSON_IP,
@@ -73,5 +75,5 @@ private static final String DYSON_IP = "192.168.86.XXX";
 ```
 
 ## Bugs - Contact
-If you found a bug, have questions or want to message me write an email to dev(at)chriis.de. Thank you!
+If you found a bug, have questions or want to message me please open an issue. Thank you!
 
