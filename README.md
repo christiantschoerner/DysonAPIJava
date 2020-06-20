@@ -2,10 +2,11 @@
 Simple Library to control Dyson Fans with Java
 Supported Devices:
 - Dyson Pure Cool™ (475)
-- More coming
+- Dyson Pure Hot+Coolᵀᴹ Link
+- Any Device with similar functions. Fork the Library and add the device in DysonDeviceType.java
 
 ## Import to project
-1) Download Jarfile with all dependencies included [here](https://drive.google.com/uc?export=download&id=1qwacjVMhxpuMV_Xe_lWYlEAdlghxft8c)
+1) Download Jarfile with all dependencies in the "Releases" tab
 2) Maven:
 Repository:
 ```xml
