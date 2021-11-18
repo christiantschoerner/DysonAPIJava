@@ -12,7 +12,7 @@ public class DysonSensorData {
 
     public Object get(DysonSensorEnum field){
         if(!sensorData.containsKey(field)){
-            throw new NullPointerException("This field is not available of the device type you specified");
+            throw new NullPointerException("This field is not available for the device type you specified");
         }
 
         return sensorData.get(field);
